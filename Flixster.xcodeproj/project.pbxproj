@@ -14,6 +14,7 @@
 		9859153621FFCB0500B41A9F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9859153421FFCB0500B41A9F /* LaunchScreen.storyboard */; };
 		9859153E21FFD0D900B41A9F /* MoviesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9859153D21FFD0D900B41A9F /* MoviesViewController.swift */; };
 		9859154021FFDA3100B41A9F /* MovieCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9859153F21FFDA3100B41A9F /* MovieCell.swift */; };
+		98B597392202D28D00C8CC0F /* MovieDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98B597382202D28D00C8CC0F /* MovieDetailsViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		9859153721FFCB0500B41A9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9859153D21FFD0D900B41A9F /* MoviesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoviesViewController.swift; sourceTree = "<group>"; };
 		9859153F21FFDA3100B41A9F /* MovieCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieCell.swift; sourceTree = "<group>"; };
+		98B597382202D28D00C8CC0F /* MovieDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieDetailsViewController.swift; sourceTree = "<group>"; };
 		F0DDF393898230A7DA767D5F /* Pods-Flixster.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Flixster.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Flixster/Pods-Flixster.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -82,6 +84,7 @@
 			children = (
 				9859152B21FFCB0300B41A9F /* AppDelegate.swift */,
 				9859152F21FFCB0300B41A9F /* Main.storyboard */,
+				98B597382202D28D00C8CC0F /* MovieDetailsViewController.swift */,
 				9859153F21FFDA3100B41A9F /* MovieCell.swift */,
 				9859153221FFCB0500B41A9F /* Assets.xcassets */,
 				9859153421FFCB0500B41A9F /* LaunchScreen.storyboard */,
@@ -171,6 +174,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-Flixster/Pods-Flixster-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/AlamofireImage/AlamofireImage.framework",
+				"${BUILT_PRODUCTS_DIR}/ChameleonFramework/ChameleonFramework.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
@@ -178,6 +182,7 @@
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AlamofireImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChameleonFramework.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -213,6 +218,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98B597392202D28D00C8CC0F /* MovieDetailsViewController.swift in Sources */,
 				9859152C21FFCB0300B41A9F /* AppDelegate.swift in Sources */,
 				9859154021FFDA3100B41A9F /* MovieCell.swift in Sources */,
 				9859153E21FFD0D900B41A9F /* MoviesViewController.swift in Sources */,
