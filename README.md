@@ -4,9 +4,38 @@ Flixster is a movie searching application for iOS.
 
 Submitted by: Yash Kakodkar
 
-Time spent: 1.5 hours spent in total
+Time spent: 8 hours spent in total
 
-## User Stories
+## Flix Part 2
+
+### User Stories
+
+#### REQUIRED (10pts)
+- [x] (5pts) User can tap a cell to see more details about a particular movie.
+- [x] (5pts) User can tap a tab bar button to view a grid layout of Movie Posters using a CollectionView.
+
+#### BONUS
+- [x] (2pts) User can tap a poster in the collection view to see a detail screen of that movie.
+- [ ] (2pts) In the detail view, when the user taps the poster, a new screen is presented modally where they can view the trailer.
+
+#### EXTRA ADDITIONAL
+- [x] Made a card stylized layout for the collection view that also displays the title and the release year.
+- [x] Gave functionality to the detail view by adding more information, a scroll view and a collection view displaying related movies.
+- [x] Added a library that changes the background view color of the detail view in accordance to the movie poster.
+
+### App Walkthough GIF
+
+<img src="https://media.giphy.com/media/fnJUv1DFcllstpklTW/giphy.gif" width=250><br>
+<img src="https://media.giphy.com/media/93lyZRcM0F6RBq9EQc/giphy.gif" width=250><br>
+
+GIF created with [GIPHY](http://www.giphy.com).
+
+### Notes
+Making the collection view in the detail view and using auto layout with the scroll view.
+
+## Flix Part 1
+
+### User Stories
 
 The following **required** functionality is complete:
 
@@ -22,7 +51,7 @@ The following **additional** features are implemented:
 
 - [x] Changed the UI to be a dark theme. Posters have a small shadow through UIImageView
 
-## Video Walkthrough 
+### Video Walkthrough 
 
 Here's a walkthrough of implemented user stories:
 
@@ -30,7 +59,7 @@ Here's a walkthrough of implemented user stories:
 
 GIF created with [GIPHY](http://www.giphy.com).
 
-## Notes
+### Notes
 
 Describe any challenges encountered while building the app.
 Figuring out shadows for images. 
