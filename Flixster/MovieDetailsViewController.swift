@@ -7,13 +7,18 @@
 //
 
 import UIKit
+import WebKit
 import ChameleonFramework
 import AlamofireImage
 
 class MovieDetailsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
 
-    
 
+    @IBOutlet weak var castTitle: UILabel!
+    @IBOutlet weak var directorTitle: UILabel!
+    @IBOutlet weak var castLabel: UILabel!
+    @IBOutlet weak var directorLabel: UILabel!
+    @IBOutlet weak var yearLabel: UILabel!
     @IBOutlet weak var synopsisLabel: UILabel!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var poster: UIImageView!
@@ -23,6 +28,12 @@ class MovieDetailsViewController: UIViewController, UICollectionViewDataSource, 
     
     var movie: [String:Any]!
     var relatedMovies = [[String : Any]]()
+    var cast = [[String : Any]]()
+    var crew = [[String : Any]]()
+    var videos = [[String : Any]]()
+    var creditsLoaded = false
+    var infoLoaded = false
+    var relatedLoaded = false
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
 
@@ -34,43 +45,21 @@ class MovieDetailsViewController: UIViewController, UICollectionViewDataSource, 
 
         // Do any additional setup after loading the view.
         print(movie["title"]!)
+        //castLabel.text = ""
+        //directorLabel.text = ""
         
-        
-        
-        relatedCollectionGrid.delegate = self
-        relatedCollectionGrid.dataSource = self
-        
-        let movieID = movie["id"] as! Int
-        // Do any additional setup after loading the view.
-        let url = URL(string: "https://api.themoviedb.org/3/movie/\(movieID)/similar?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed")!
-        print(url)
-        let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
-        let session = URLSession(configuration: .default, delegate: nil, delegateQueue: OperationQueue.main)
-        let taskRelated = session.dataTask(with: request) { (data, response, error) in
-            // This will run when the network request returns
-            print("hello hi")
-            if let error = error {
-                print(error.localizedDescription)
-            } else if let data = data {
-                let dataDictionary = try! JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
-                
-                print("hello")
-                self.relatedMovies = dataDictionary["results"] as! [[String: Any]]
-                print("relatedMovies: " + "\(self.relatedMovies.count)")
-                self.relatedCollectionGrid.reloadData()
-                // TODO: Get the array of movies
-                // TODO: Store the movies in a property to use elsewhere
-                // TODO: Reload your table view data
-                
-            }
-        }
-        taskRelated.resume()
-        
-        loadData()
-        loadRelatedMovieData()
-        loadVisuals()
         
 
+        loadRelatedMovieData()
+        loadData()
+        loadCastDirector()
+        while(!(creditsLoaded&&relatedLoaded&&infoLoaded)){
+            loadVisuals()
+            break;
+        }
+        
+        self.relatedCollectionGrid.reloadData()
+        print("items \(relatedCollectionGrid.numberOfItems(inSection: 0))")
         
         //self.navigationController!.navigationBar.backgroundColor = UIColor.clear
         
@@ -93,16 +82,21 @@ class MovieDetailsViewController: UIViewController, UICollectionViewDataSource, 
         //background color
         let backgroundColors: [UIColor] = ColorsFromImage(poster.image!, withFlatScheme: true)
         colorBackground.backgroundColor = backgroundColors[2]
-        self.title = "Detail"
+        yearLabel.textColor = backgroundColors[1]
         if (getContrastColor(color: backgroundColors[2])){
             titleLabel.textColor = UIColor.black
             synopsisLabel.textColor = UIColor.black
+            directorTitle.textColor = UIColor.black
+            castTitle.textColor = UIColor.black
+            directorLabel.textColor = UIColor.darkText
+            castLabel.textColor = UIColor.darkText
         }
         
         
+        
         //collection view ui
-        relatedCollectionGrid.contentInset = UIEdgeInsets(top: 10, left: 15, bottom: 0, right: 15)
-        relatedCollectionGrid.layer.cornerRadius = 2
+        relatedCollectionGrid.contentInset = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 15)
+        //relatedCollectionGrid.layer.cornerRadius = 2
         let layout = relatedCollectionGrid.collectionViewLayout as! UICollectionViewFlowLayout
         layout.minimumLineSpacing = 15
         layout.minimumInteritemSpacing = 15
@@ -115,9 +109,10 @@ class MovieDetailsViewController: UIViewController, UICollectionViewDataSource, 
     func loadData(){
         print("dataTrue")
         
+        let release = movie["release_date"] as! String
         titleLabel.text = movie["title"] as? String
         synopsisLabel.text = movie["overview"] as? String
-        
+        yearLabel.text = String(release.prefix(4))
         titleLabel.sizeToFit()
         synopsisLabel.sizeToFit()
         
@@ -131,11 +126,75 @@ class MovieDetailsViewController: UIViewController, UICollectionViewDataSource, 
         let backDropPath = movie["backdrop_path"] as! String
         let backDropURL = URL(string: "https://image.tmdb.org/t/p/w1280" + backDropPath)
         backDropView.af_setImage(withURL: backDropURL!)
+        
+        let image: UIImage? = poster.image
+        if image != nil{
+            self.infoLoaded = true
+        }
+        
     }
     
+    //setups information for related movies
     func loadRelatedMovieData() {
         print("relatedTrue")
-
+        relatedCollectionGrid.delegate = self
+        relatedCollectionGrid.dataSource = self
+        
+        let movieID = movie["id"] as! Int
+        let url = URL(string: "https://api.themoviedb.org/3/movie/\(movieID)/recommendations?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed")!
+        let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
+        let session = URLSession(configuration: .default, delegate: nil, delegateQueue: OperationQueue.main)
+        let taskRelated = session.dataTask(with: request) { (data, response, error) in
+            // This will run when the network request returns
+            if let error = error {
+                print(error.localizedDescription)
+            } else if let data = data {
+                let dataDictionary = try! JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
+                
+                self.relatedMovies = dataDictionary["results"] as! [[String: Any]]
+                print("relatedMovies: " + "\(self.relatedMovies.count)")
+                self.relatedCollectionGrid.reloadData()
+                self.relatedLoaded = true
+            }
+        }
+        taskRelated.resume()
+    }
+    
+    
+    //sets up information for cast and director
+    func loadCastDirector(){
+        let movieID = movie["id"] as! Int
+        // Do any additional setup after loading the view.
+        let url = URL(string: "https://api.themoviedb.org/3/movie/\(movieID)/credits?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed")!
+        print(url)
+        let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
+        let session = URLSession(configuration: .default, delegate: nil, delegateQueue: OperationQueue.main)
+        let taskRelated = session.dataTask(with: request) { (data, response, error) in
+            // This will run when the network request returns
+            if let error = error {
+                print(error.localizedDescription)
+            } else if let data = data {
+                let dataDictionary = try! JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
+                self.cast = dataDictionary["cast"] as! [[String: Any]]
+                self.crew = dataDictionary["crew"] as! [[String: Any]]
+  
+                //create cast and director strings
+                var castMembers = ""
+                castMembers.append(self.cast[0]["name"] as! String)
+                for i in 1...min(5,self.cast.count-1){
+                    castMembers.append(", " + (self.cast[i]["name"] as! String))
+                }
+                let director = self.crew[0]["name"] as! String
+                
+                self.castLabel.text = castMembers
+                self.directorLabel.text = director
+                self.creditsLoaded = true
+                
+                
+            }
+        }
+        taskRelated.resume()
+        
     }
     
     
@@ -164,21 +223,7 @@ class MovieDetailsViewController: UIViewController, UICollectionViewDataSource, 
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print("precut")
-        print(relatedMovies.count)
-        relatedMovies = relatedMovies.shuffled()
-        if(relatedMovies.count>6){
-            for i in stride(from: relatedMovies.count-1, to: 5, by: -1) {
-                relatedMovies.remove(at: i)
-            }
-            print("incut")
-        }
-        print("postcut")
-        print(relatedMovies.count)
-        
-//        return relatedMovies.count
-        return 6
-        //return min(6, relatedMovies.count)
+        return min(6, relatedMovies.count)
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -204,6 +249,32 @@ class MovieDetailsViewController: UIViewController, UICollectionViewDataSource, 
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView,
+                                 viewForSupplementaryElementOfKind kind: String,
+                                 at indexPath: IndexPath) -> UICollectionReusableView {
+        // 1
+        switch kind {
+        // 2
+        case UICollectionView.elementKindSectionHeader:
+            // 3
+            guard
+                let headerView = relatedCollectionGrid.dequeueReusableSupplementaryView(
+                    ofKind: kind,
+                    withReuseIdentifier: "\(DetailHeaderView.self)",
+                    for: indexPath) as? DetailHeaderView
+                else {
+                    fatalError("Invalid view type")
+            }
+            
+            
+            //headerView.relatedLabel.text = "More like this"
+            return headerView
+        default:
+            // 4
+            assert(false, "Invalid element type")
+        }
+    }
+    
     
 
     
@@ -214,11 +285,15 @@ class MovieDetailsViewController: UIViewController, UICollectionViewDataSource, 
          print("loading data")
         
          // Find the selected movie
-         let cell = sender as! UICollectionViewCell
-         let indexPath = relatedCollectionGrid.indexPath(for: cell)!
-         let movie = relatedMovies[indexPath.item]
-         let detailsViewController = segue.destination as! MovieDetailsViewController
-         detailsViewController.movie = movie
+         //if(segue.identifier=="similarSegue"){
+            let cell = sender as! UICollectionViewCell
+            let indexPath = relatedCollectionGrid.indexPath(for: cell)!
+            let movie = relatedMovies[indexPath.item]
+            let detailsViewController = segue.destination as! MovieDetailsViewController
+            detailsViewController.movie = movie
+//         } else if(segue.identifier=="trailerToDetail"){
+//            let trailerWebViewController = segue.destination as! trailerViewController
+//        }
         
          // Get the new view controller using segue.destination.
          // Pass the selected object to the new view controller.
