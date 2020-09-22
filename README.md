@@ -25,8 +25,8 @@ Time spent: 8 hours spent in total
 
 ### App Walkthough GIF
 
-<img src="https://media.giphy.com/media/fnJUv1DFcllstpklTW/giphy.gif" width=250><br>
-<img src="https://media.giphy.com/media/93lyZRcM0F6RBq9EQc/giphy.gif" width=250><br>
+<img src="https://media.giphy.com/media/kp31MR5kKWgtMybX2c/giphy.gif" width=250><br>
+<img src="https://media.giphy.com/media/zxD7ZUthsDCzKKJvBj/giphy.gif" width=250><br>
 
 GIF created with [GIPHY](http://www.giphy.com).
 
